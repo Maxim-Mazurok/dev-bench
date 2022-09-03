@@ -16,3 +16,11 @@ Designed to benchmark performance of PCs/Laptops/WSL/etc when working on NodeJS-
    Benchmarking "unit test"...
    Average: 45s ±10s
    ```
+
+## Limitations
+
+- No way to specify NodeJS or NPM version per project. It'll use whichever version you're using to run benchmarks for all the benchmarked projects. To benchmark different projects create different configs and run them separately.
+
+## TODO
+
+- [ ] Add NodeJS/NPM version support (using nodeenv most likely)
