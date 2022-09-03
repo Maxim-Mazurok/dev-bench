@@ -58,13 +58,14 @@ class ProcessProject {
 
     this.project.patches?.forEach(this.processPatch.bind(this));
 
+    console.log(`Processing ${this.project.name}`);
     this.project.commands.forEach(this.processCommand.bind(this));
 
     rimraf.sync(this.repositoryFolder);
   }
 }
 
-const getRepositoryFolder = () => mkdtempSync(`${tmpdir()}${sep}`);
+const getRepositoryFolder = () => mkdtempSync(join(tmpdir(), "dev-bench"));
 
 const clone = (gitUrl: Project["gitUrl"], repositoryFolder: string) =>
   execSync(`git clone ${gitUrl} ${repositoryFolder}`, execSyncDefaultOptions);
