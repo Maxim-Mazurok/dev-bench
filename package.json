@@ -1,0 +1,27 @@
+{
+  "name": "dev-bench",
+  "version": "1.0.0",
+  "description": "Run Benchmarks For Development",
+  "main": "index.js",
+  "scripts": {
+    "start": "npx ts-node index.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": {
+    "name": "Maxim Mazurok",
+    "email": "maxim@mazurok.com",
+    "url": "https://maxim.mazurok.com"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@types/node": "^18.7.14",
+    "@types/rimraf": "^3.0.2",
+    "humanize-duration": "^3.27.3",
+    "mathjs": "^11.1.0",
+    "rimraf": "^3.0.2",
+    "ts-node": "^10.9.1"
+  },
+  "devDependencies": {
+    "@types/humanize-duration": "^3.27.1"
+  }
+}
