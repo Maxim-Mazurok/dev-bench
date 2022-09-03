@@ -1,5 +1,10 @@
 import { Project } from "./types";
 
+// defaults
+export const runBenchmarksTimes = 3;
+export const coolDownBeforeAndBetweenBenchmarksSeconds = 5;
+
+// config
 export const projects: Project[] = [
   {
     name: "My App",

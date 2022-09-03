@@ -1,5 +1,5 @@
 import { execSync } from "child_process";
-import { mkdtempSync, readFileSync, writeFileSync } from "fs";
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "fs";
 import { tmpdir } from "os";
 import { join, sep } from "path";
 import { projects } from "./config";
@@ -31,9 +31,14 @@ class ProcessProject {
 
   private processPatch(patch: Patch) {
     const fullFilePath = join(this.projectRootFolder, patch.file);
-    const original = readFileSync(fullFilePath, "utf-8");
-    const patched = original.replace(patch.search, patch.replace);
-    writeFileSync(fullFilePath, patched);
+    if (patch.delete === true) {
+      rmSync(fullFilePath);
+      return;
+    } else if (patch.search !== undefined && patch.replace !== undefined) {
+      const original = readFileSync(fullFilePath, "utf-8");
+      const patched = original.replace(patch.search, patch.replace);
+      writeFileSync(fullFilePath, patched);
+    }
   }
 
   private processCommand(command: Command) {

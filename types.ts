@@ -6,8 +6,9 @@ export interface Command {
 export interface Patch {
   name: string;
   file: string;
-  search: string;
-  replace: string;
+  search?: string;
+  replace?: string;
+  delete?: true;
 }
 
 export interface Project {

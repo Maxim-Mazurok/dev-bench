@@ -1,6 +1,10 @@
 import { ExecSyncOptionsWithStringEncoding } from "child_process";
 import humanizeDuration from "humanize-duration";
 import { mean, std } from "mathjs";
+import {
+  coolDownBeforeAndBetweenBenchmarksSeconds,
+  runBenchmarksTimes,
+} from "./config";
 
 // from https://stackoverflow.com/a/30452949/4536543
 const runFunctionTimes =
@@ -26,9 +30,9 @@ const measureFunctionTimeInMs = (functionToMeasure: Function) => {
 
 export const measureAverageFunctionTimeInMs = (
   functionToMeasure: Function,
-  times = 3,
+  times = runBenchmarksTimes || 3,
   onlyConsecutive = true,
-  coolDownSeconds = 5
+  coolDownSeconds = coolDownBeforeAndBetweenBenchmarksSeconds || 5
 ) => {
   const totals: number[] = [];
   if (onlyConsecutive) {
