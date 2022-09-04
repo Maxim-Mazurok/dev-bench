@@ -1,5 +1,5 @@
 import { ExecSyncOptionsWithStringEncoding as ExecOptionsWithStringEncoding } from "child_process";
-import humanizeDuration from "humanize-duration";
+import humanizeDuration, { HumanizerOptions } from "humanize-duration";
 import { mean, std } from "mathjs";
 import {
   coolDownBeforeAndBetweenBenchmarksSeconds,
@@ -96,8 +96,14 @@ const shortEnglishHumanizer = humanizeDuration.humanizer({
   },
 });
 
-export const humanizeDurationRound = (timeMs: number) =>
-  shortEnglishHumanizer(timeMs, { round: true, spacer: "" });
+export const humanizeDurationRound = (timeMs: number) => {
+  const options: HumanizerOptions = { round: true, spacer: "" };
+  if (timeMs < 10000) {
+    // add ms to times that are less than 10 seconds
+    options.units = ["y", "mo", "w", "d", "h", "m", "s", "ms"];
+  }
+  return shortEnglishHumanizer(timeMs, options);
+};
 
 /**
  * @param seconds Seconds to wait

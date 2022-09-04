@@ -6,8 +6,8 @@ import {
   rmSync,
   writeFileSync,
 } from "fs";
-import { EOL, tmpdir } from "os";
-import path, { join } from "path";
+import { tmpdir } from "os";
+import { join } from "path";
 import { defaultEngines, projects } from "./config.js";
 import {
   analyseTotals,
@@ -149,6 +149,7 @@ class ProcessProject {
       asyncFunctionToMeasure
     );
     const { mean, std } = analyseTotals(totals);
+    console.log(`Totals in ms: ${totals.join(", ")}`);
     console.log(
       `Average: ${humanizeDurationRound(mean)} ±${humanizeDurationRound(std)}`
     );
