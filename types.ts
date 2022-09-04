@@ -1,6 +1,7 @@
 export interface Command {
   name: string;
-  npmScriptName: string;
+  npmScriptName?: string;
+  npxCommand?: string;
 }
 
 export interface Patch {
@@ -9,6 +10,7 @@ export interface Patch {
   search?: string;
   replace?: string;
   delete?: true;
+  append?: string;
 }
 
 export interface Project {
@@ -17,4 +19,9 @@ export interface Project {
   rootFolder: string;
   patches?: Patch[];
   commands: Command[];
+}
+
+export interface RunWithNodeenvResult {
+  output: string;
+  error: string;
 }

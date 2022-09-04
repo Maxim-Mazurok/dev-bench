@@ -1,50 +1,54 @@
-import { ExecSyncOptionsWithStringEncoding } from "child_process";
+import { ExecSyncOptionsWithStringEncoding as ExecOptionsWithStringEncoding } from "child_process";
 import humanizeDuration from "humanize-duration";
 import { mean, std } from "mathjs";
 import {
   coolDownBeforeAndBetweenBenchmarksSeconds,
   runBenchmarksTimes,
-} from "./config";
+} from "./config.js";
 
 // from https://stackoverflow.com/a/30452949/4536543
-const runFunctionTimes =
-  (repeatTimes: number) => (functionToRepeat: Function) => {
+const runAsyncFunctionTimes =
+  (repeatTimes: number) =>
+  async (asyncFunctionToRepeat: () => Promise<unknown>) => {
     if (repeatTimes > 0) {
-      functionToRepeat();
-      runFunctionTimes(repeatTimes - 1)(functionToRepeat);
+      await asyncFunctionToRepeat();
+      await runAsyncFunctionTimes(repeatTimes - 1)(asyncFunctionToRepeat);
     }
   };
 
 const secondsToMs = (seconds: number) => seconds * 1_000;
 const nanosecondsToMs = (nanoseconds: number) => nanoseconds / 1_000_000;
 
-const measureFunctionTimeInMs = (functionToMeasure: Function) => {
+const measureAsyncFunctionTimeInMs = async (
+  asyncFunctionToMeasure: () => Promise<unknown>
+) => {
   const startTime = process.hrtime();
 
-  functionToMeasure();
+  await asyncFunctionToMeasure();
 
   const elapsedTime = process.hrtime(startTime);
 
   return secondsToMs(elapsedTime[0]) + nanosecondsToMs(elapsedTime[1]);
 };
 
-export const measureAverageFunctionTimeInMs = (
-  functionToMeasure: Function,
+export const measureAverageAsyncFunctionTimeInMs = async (
+  asyncFunctionToMeasure: () => Promise<unknown>,
   times = runBenchmarksTimes || 3,
   onlyConsecutive = true,
   coolDownSeconds = coolDownBeforeAndBetweenBenchmarksSeconds || 5
 ) => {
   const totals: number[] = [];
   if (onlyConsecutive) {
-    functionToMeasure(); // first run doesn't count (caching, etc.)
+    await asyncFunctionToMeasure(); // first run doesn't count (caching, etc.)
   }
 
   sleep(coolDownSeconds); // sleep before running benchmarks
 
-  runFunctionTimes(times)(() => {
-    totals.push(measureFunctionTimeInMs(functionToMeasure));
+  await runAsyncFunctionTimes(times)(async () => {
+    totals.push(await measureAsyncFunctionTimeInMs(asyncFunctionToMeasure));
     sleep(coolDownSeconds);
   });
+
   return totals;
 };
 
@@ -55,7 +59,7 @@ export const analyseTotals = (
   std: std(totals, "unbiased"),
 });
 
-export const execSyncDefaultOptions: ExecSyncOptionsWithStringEncoding = {
+export const execDefaultOptions: ExecOptionsWithStringEncoding = {
   encoding: "utf-8",
 };
 
