@@ -12,9 +12,9 @@ Designed to benchmark performance of PCs/Laptops/WSL/etc when working on NodeJS-
 6. See results (mean ± standard deviation):
    ```
    Benchmarking "build"...
-   Average: 27s ±5s
+   Average: 10s ±132ms
    Benchmarking "unit test"...
-   Average: 45s ±10s
+   Average: 45s ±12s
    ```
 
 ### Configuration
