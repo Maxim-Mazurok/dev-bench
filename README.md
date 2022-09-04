@@ -5,11 +5,14 @@ Designed to benchmark performance of PCs/Laptops/WSL/etc when working on NodeJS-
 ## Getting Started
 
 1. Clone this repo
-2. Run `npm ci` to install deps
-3. Copy `config.example.ts` to `config.ts`
-4. Modify `config.ts` to your liking (add projects, commands, optionally patches, etc.), see [Configuration](#configuration)
-5. Run `npm start`
-6. See results (mean ± standard deviation):
+2. Install Python3 (`sudo apt install python-is-python3` on WSL)
+3. Install `pip` (`sudo apt install python3-pip` on WSL)
+4. Install `nodeenv`: `pip install nodeenv`
+5. Run `npm ci` to install deps
+6. Copy `config.example.ts` to `config.ts`
+7. Modify `config.ts` to your liking (add projects, commands, optionally patches, etc.), see [Configuration](#configuration)
+8. Run `npm start`
+9. See results (mean ± standard deviation):
    ```
    Benchmarking "build"...
    Average: 10s ±132ms
