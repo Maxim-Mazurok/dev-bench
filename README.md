@@ -31,14 +31,6 @@ Available patching options:
 
 Note: all patching options are exclusive <!-- TODO: make it apparent in types -->
 
-## Limitations
-
-- No way to specify NodeJS or NPM version per project. It'll use whichever version you're using to run benchmarks for all the benchmarked projects. To benchmark different projects create different configs and run them separately.
-
 ## Troubleshooting
 
 - Enable debug logging: `npx -y cross-env DEBUG=true npm start` and look in `log.txt`
-
-## TODO
-
-- [ ] Add NodeJS/NPM version support (using nodeenv most likely)
