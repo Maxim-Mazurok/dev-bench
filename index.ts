@@ -107,12 +107,16 @@ class ProcessProject {
     });
   }
 
-  private async npmRun(npmScriptName: Required<Command>["npmScriptName"]) {
-    return this.runWithNodeenv(["npm", "run", npmScriptName].join(" "));
+  private async npmCommand(npmCommand: Required<Command>["npmCommand"]) {
+    return this.runWithNodeenv(["npm", npmCommand].join(" "));
   }
 
-  private async npx(npxCommand: Required<Command>["npxCommand"]) {
+  private async npxCommand(npxCommand: Required<Command>["npxCommand"]) {
     return this.runWithNodeenv(["npx", npxCommand].join(" "));
+  }
+
+  private async npmRun(npmScriptName: Required<Command>["npmScriptName"]) {
+    return this.npmCommand(["run", npmScriptName].join(" "));
   }
 
   private processPatch(patch: Patch) {
@@ -133,14 +137,16 @@ class ProcessProject {
   private async processCommand(command: Command) {
     console.log(`Processing command: ${command.name}`);
 
-    const { npmScriptName, npxCommand } = command;
+    const { npmScriptName, npxCommand, npmCommand } = command;
 
     let asyncFunctionToMeasure: () => Promise<RunWithNodeenvResult>;
 
     if (npmScriptName !== undefined) {
       asyncFunctionToMeasure = () => this.npmRun(npmScriptName);
     } else if (npxCommand !== undefined) {
-      asyncFunctionToMeasure = () => this.npx(npxCommand);
+      asyncFunctionToMeasure = () => this.npxCommand(npxCommand);
+    } else if (npmCommand !== undefined) {
+      asyncFunctionToMeasure = () => this.npmCommand(npmCommand);
     } else {
       throw "no command";
     }

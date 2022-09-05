@@ -1,7 +1,8 @@
 export interface Command {
   name: string;
-  npmScriptName?: string;
-  npxCommand?: string;
+  npmScriptName?: string; // `npm run ${npmScriptName}`
+  npxCommand?: string; // `npx ${npxCommand}`
+  npmCommand?: string; // `npm ${npmCommand}`
 }
 
 export interface Patch {
