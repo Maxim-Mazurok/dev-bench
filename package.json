@@ -27,5 +27,9 @@
     "normalize-node-version": "^12.2.0",
     "rimraf": "^3.0.2",
     "ts-node": "^10.9.1"
+  },
+  "engines": {
+    "node": "18.8.0",
+    "npm": "8.18.0"
   }
 }
