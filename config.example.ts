@@ -1,5 +1,5 @@
 import { Engines } from "./nodeenv.js";
-import { Project } from "./types.js";
+import { Environment, Project } from "./types.js";
 
 // defaults
 export const runBenchmarksTimes = 3;
@@ -8,6 +8,20 @@ export const defaultEngines: Engines = {
   // will use this if there is no "engines" section in package.json
   node: "16.13.0",
   npm: "8.1.0",
+};
+
+export const environment: Partial<Environment> = {
+  deviceName: "Work Laptop", // detected automatically if not specified
+  platform: "linux", // detected automatically if not specified
+  platformDetails: "WSL2 (Ubuntu 22.04.1)", // TODO: maybe detect automatically using https://www.npmjs.com/package/getos
+  biosSettings: {
+    "Intel® Turbo Boost Max Technology 3.0": true,
+  },
+  otherSettings: {
+    batteryLevelPercent: 100,
+    powerMode: "Best performance",
+    charging: true,
+  },
 };
 
 // config

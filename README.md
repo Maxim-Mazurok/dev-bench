@@ -12,13 +12,16 @@ Designed to benchmark performance of PCs/Laptops/WSL/etc when working on NodeJS-
 6. Copy `config.example.ts` to `config.ts`
 7. Modify `config.ts` to your liking (add projects, commands, optionally patches, etc.), see [Configuration](#configuration)
 8. Run `npm start`
-9. See results (mean ± standard deviation):
+9. See results in CLI (mean ± standard deviation):
+
    ```
    Benchmarking "build"...
    Average: 10s ±132ms
    Benchmarking "unit test"...
    Average: 45s ±12s
    ```
+
+   and more details in `results.json` file
 
 ### Configuration
 
@@ -33,6 +36,19 @@ Available patching options:
 - append: set `append: "some-string"` - will append to file
 
 Note: all patching options are exclusive <!-- TODO: make it apparent in types -->
+
+### Extensibility
+
+The system supports multiple reporters that extend [`Reporter` class](./reporters/Reporter.ts).
+
+Available reporters:
+
+- `cli` - logs totals, averages and deviation to stdout
+- `fs` - preserves reports into `reports.json` file
+
+All reporters have to implement `reportResult()` method that is called after each command is benchmarked.
+
+<!-- TODO: add visual reporter, probably at the end of all benchmarks? -->
 
 ## Troubleshooting
 

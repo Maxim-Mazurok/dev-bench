@@ -26,3 +26,15 @@ export interface RunWithNodeenvResult {
   output: string;
   error: string;
 }
+
+export interface Environment {
+  deviceName: string; // work laptop, home PC, etc.
+  platform: NodeJS.Platform; // win32, linux, etc.
+  platformDetails: string; // WSL2, Ubuntu 22.04.1, etc.
+  biosSettings: {
+    [key: string]: boolean | number | string; // for example, { "Intel® Turbo Boost Max Technology 3.0": false }
+  };
+  otherSettings: {
+    [key: string]: boolean | number | string; // for example, { "Ambient Temperature": 30 }
+  };
+}
