@@ -53,3 +53,7 @@ All reporters have to implement `reportResult()` method that is called after eac
 ## Troubleshooting
 
 - Enable debug logging: `npx -y cross-env DEBUG=true npm start` and look in `log.txt`
+
+## TODO
+
+- [ ] Add visual comparison of results: ![chart design](design.png)
