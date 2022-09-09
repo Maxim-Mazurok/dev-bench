@@ -57,3 +57,4 @@ All reporters have to implement `reportResult()` method that is called after eac
 ## TODO
 
 - [ ] Add visual comparison of results: ![chart design](design.png)
+  - [ ] Finish [Vega](https://vega.github.io/editor) [prototype](design.json)

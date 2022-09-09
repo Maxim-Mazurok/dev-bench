@@ -7,73 +7,95 @@
   "config": {
     "axisBand": { "bandPosition": 1, "tickExtra": true, "tickOffset": 0 }
   },
-  "signals": [
-    {
-      "name": "errorMeasure",
-      "value": "Standard Deviation",
-      "bind": {
-        "input": "select",
-        "options": [
-          "Standard Deviation",
-          "95% Confidence Interval",
-          "Standard Error",
-          "Interquartile Range"
-        ]
-      }
-    },
-    {
-      "name": "lookup",
-      "value": {
-        "95% Confidence Interval": "ci",
-        "Standard Deviation": "stdev",
-        "Standard Error": "stderr",
-        "Interquartile Range": "iqr"
-      }
-    },
-    { "name": "measure", "update": "lookup[errorMeasure]" }
-  ],
   "data": [
-    { "name": "barley", "url": "data/barley.json" },
     {
-      "name": "summary",
-      "source": "barley",
+      "name": "results",
+      "values": [
+        {
+          "duration": 13,
+          "environment": "Windows",
+          "command": "npm ci",
+          "project": "BWW"
+        },
+        {
+          "duration": 10,
+          "environment": "Windows",
+          "command": "npm ci",
+          "project": "BWW"
+        },
+        {
+          "duration": 13,
+          "environment": "Windows",
+          "command": "npm ci",
+          "project": "BWW"
+        },
+        {
+          "duration": 10,
+          "environment": "WSL",
+          "command": "npm ci",
+          "project": "BWW"
+        },
+        {
+          "duration": 11,
+          "environment": "WSL",
+          "command": "npm ci",
+          "project": "BWW"
+        },
+        {
+          "duration": 10,
+          "environment": "WSL",
+          "command": "npm ci",
+          "project": "BWW"
+        },
+        {
+          "duration": 7,
+          "environment": "Windows",
+          "command": "npm run build",
+          "project": "BWW"
+        },
+        {
+          "duration": 8,
+          "environment": "WSL",
+          "command": "npm run build",
+          "project": "BWW"
+        },
+        {
+          "duration": 5,
+          "environment": "Windows",
+          "command": "npm run build",
+          "project": "BWW"
+        },
+        {
+          "duration": 8.5,
+          "environment": "WSL",
+          "command": "npm run build",
+          "project": "BWW"
+        }
+      ]
+    },
+    {
+      "name": "temp_results",
+      "source": "results",
       "transform": [
         {
           "type": "aggregate",
-          "groupby": ["variety"],
-          "fields": [
-            "yield",
-            "yield",
-            "yield",
-            "yield",
-            "yield",
-            "yield",
-            "yield",
-            "yield",
-            "yield"
-          ],
-          "ops": [
-            "mean",
-            "stdev",
-            "stderr",
-            "ci0",
-            "ci1",
-            "q1",
-            "q3",
-            "min",
-            "max"
-          ],
-          "as": [
-            "mean",
-            "stdev",
-            "stderr",
-            "ci0",
-            "ci1",
-            "iqr0",
-            "iqr1",
-            "min",
-            "max"
-          ]
+          "groupby": ["project", "command", "environment"],
+          "fields": ["duration", "duration", "duration", "duration"],
+          "ops": ["mean", "stdev", "min", "max"],
+          "as": ["mean", "stdev", "min", "max"]
+        }
+      ]
+    },
+    {
+      "name": "minmax",
+      "source": "results",
+      "transform": [
+        {
+          "type": "aggregate",
+          "groupby": ["project", "command", "environment"],
+          "fields": ["duration", "duration", "duration", "duration"],
+          "ops": ["mean", "min", "max", "stdev"],
+          "as": ["mean", "min", "max", "stdev"]
         },
         {
           "type": "formula",
@@ -84,16 +106,6 @@
           "type": "formula",
           "as": "stdev1",
           "expr": "datum.mean + datum.stdev"
-        },
-        {
-          "type": "formula",
-          "as": "stderr0",
-          "expr": "datum.mean - datum.stderr"
-        },
-        {
-          "type": "formula",
-          "as": "stderr1",
-          "expr": "datum.mean + datum.stderr"
         }
       ]
     }
@@ -103,70 +115,129 @@
       "name": "yscale",
       "type": "band",
       "range": "height",
-      "domain": {
-        "data": "summary",
-        "field": "variety",
-        "sort": { "op": "max", "field": "mean", "order": "descending" }
-      }
+      "domain": { "data": "temp_results", "field": "command" }
     },
     {
       "name": "xscale",
       "type": "linear",
       "range": "width",
       "round": true,
-      "domain": { "data": "summary", "fields": ["stdev0", "stdev1"] },
+      "domain": {
+        "data": "minmax",
+        "fields": ["stdev0", "stdev1", "min", "max"]
+      },
       "zero": false,
       "nice": true
     }
   ],
   "axes": [
-    {
-      "orient": "bottom",
-      "scale": "xscale",
-      "zindex": 1,
-      "title": "Barley Yield"
-    },
-    { "orient": "left", "scale": "yscale", "tickCount": 5, "zindex": 1 }
+    { "orient": "bottom", "scale": "xscale", "zindex": 1, "title": "duration" },
+    { "orient": "left", "scale": "yscale", "zindex": 1 }
   ],
   "marks": [
     {
-      "type": "rect",
-      "from": { "data": "summary" },
-      "encode": {
-        "enter": { "fill": { "value": "#DAE8FC" }, "height": { "value": 10 } },
-        "update": {
-          "y": { "scale": "yscale", "field": "variety", "band": 0.25 },
-          "x": { "scale": "xscale", "signal": "datum['min']" },
-          "x2": { "scale": "xscale", "signal": "datum['max']" }
+      "type": "group",
+      "from": {
+        "facet": {
+          "data": "temp_results",
+          "name": "facet",
+          "groupby": "command"
         }
-      }
-    },
-    {
-      "type": "rect",
-      "from": { "data": "summary" },
-      "encode": {
-        "enter": { "fill": { "value": "#6C8EBF" }, "height": { "value": 3 } },
-        "update": {
-          "y": { "scale": "yscale", "field": "variety", "band": 0.5 },
-          "x": { "scale": "xscale", "signal": "datum[measure+'0']" },
-          "x2": { "scale": "xscale", "signal": "datum[measure+'1']" }
-        }
-      }
-    },
-    {
-      "type": "rect",
-      "from": { "data": "summary" },
-      "encode": {
-        "enter": {
-          "fill": { "value": "black" },
-          "height": { "value": 10 },
-          "width": { "value": 3 }
+      },
+      "encode": { "enter": { "y": { "scale": "yscale", "field": "command" } } },
+      "signals": [{ "name": "height", "update": "bandwidth('yscale')" }],
+      "scales": [
+        {
+          "name": "environment_scale",
+          "type": "band",
+          "range": "height",
+          "paddingOuter": 0.2,
+          "domain": { "data": "facet", "field": "environment" }
         },
-        "update": {
-          "y": { "scale": "yscale", "field": "variety", "band": 0.25 },
-          "xc": { "scale": "xscale", "field": "mean" }
+        {
+          "name": "environment_mean_color",
+          "type": "ordinal",
+          "domain": { "data": "temp_results", "field": "environment" },
+          "range": ["#dae8fc", "#fff2cc"]
+        },
+        {
+          "name": "environment_minmax_color",
+          "type": "ordinal",
+          "domain": { "data": "temp_results", "field": "environment" },
+          "range": ["#6c8ebf", "#d6b656"]
         }
-      }
+      ],
+      "marks": [
+        {
+          "name": "stdevs",
+          "type": "rect",
+          "from": { "data": "facet" },
+          "encode": {
+            "enter": {
+              "fill": {
+                "scale": "environment_mean_color",
+                "field": "environment"
+              },
+              "height": { "scale": "environment_scale", "band": 1 },
+              "y": { "scale": "environment_scale", "field": "environment" },
+              "x": { "scale": "xscale", "signal": "datum.mean - datum.stdev" },
+              "x2": { "scale": "xscale", "signal": "datum.mean + datum.stdev" }
+            }
+          }
+        },
+        {
+          "name": "minmaxes",
+          "type": "rect",
+          "from": { "data": "facet" },
+          "encode": {
+            "enter": {
+              "fill": {
+                "scale": "environment_minmax_color",
+                "field": "environment"
+              },
+              "height": { "scale": "environment_scale", "band": 0.2 },
+              "y": {
+                "scale": "environment_scale",
+                "field": "environment",
+                "offset": { "scale": "environment_scale", "band": 0.4 }
+              },
+              "x": { "scale": "xscale", "field": "min" },
+              "x2": { "scale": "xscale", "field": "max" }
+            }
+          }
+        },
+        {
+          "name": "means",
+          "type": "rect",
+          "from": { "data": "facet" },
+          "encode": {
+            "enter": {
+              "fill": { "value": "black" },
+              "height": { "scale": "environment_scale", "band": 1 },
+              "width": { "scale": "environment_scale", "band": 0.2 },
+              "y": { "scale": "environment_scale", "field": "environment" },
+              "xc": { "scale": "xscale", "field": "mean" }
+            }
+          }
+        },
+        {
+          "type": "text",
+          "from": { "data": "stdevs" },
+          "encode": {
+            "enter": {
+              "x": { "field": "x", "offset": -5 },
+              "y": {
+                "field": "y",
+                "offset": { "field": "height", "mult": 0.25 }
+              },
+              "fill": { "value": "black" },
+              "align": { "value": "right" },
+              "baseline": { "value": "middle" },
+              "text": { "field": "datum.environment" }
+            }
+          }
+        }
+      ]
     }
   ]
 }
