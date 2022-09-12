@@ -21,10 +21,7 @@ import {
   runWithNodeenv,
   installNodeenv,
 } from "./nodeenv.js";
-import {
-  CollectResult,
-  Reporter,
-} from "./reporters/Reporter.js";
+import { CollectResult, Reporter } from "./reporters/Reporter.js";
 import { Project, RunWithNodeenvResult, Command, Patch } from "./types.js";
 
 export class ProcessProject {
@@ -56,8 +53,16 @@ export class ProcessProject {
 
   private async gitClone() {
     console.log(`Cloning ${this.project.gitUrl} into ${this.repositoryFolder}`);
+
+    const getGitCliParameters = () =>
+      Object.entries(this.project.gitCliConfigOverrides)
+        .map(([parameter, value]) => `-c ${[parameter, value].join("=")}`)
+        .join(" ");
+
     const process = exec(
-      `git clone ${this.project.gitUrl} ${this.repositoryFolder}`,
+      `git clone ${this.project.gitUrl} ${
+        this.repositoryFolder
+      } ${getGitCliParameters()}`,
       execDefaultOptions
     );
     const result = await this.runProcess(process);

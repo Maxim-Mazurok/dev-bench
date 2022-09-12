@@ -17,6 +17,9 @@ export interface Patch {
 export interface Project {
   name: string;
   gitUrl: string;
+  gitCliConfigOverrides: {
+    [key: string]: boolean | number | string;
+  };
   rootFolder: string;
   patches?: Patch[];
   commands: Command[];

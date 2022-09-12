@@ -29,6 +29,9 @@ export const projects: Project[] = [
   {
     name: "My App",
     gitUrl: "https://github.com/my/app",
+    gitCliConfigOverrides: {
+      "core.autocrlf": true,
+    },
     rootFolder: "Frontend/src",
     patches: [
       {

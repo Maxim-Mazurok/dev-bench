@@ -25,6 +25,29 @@ Designed to benchmark performance of PCs/Laptops/WSL/etc when working on NodeJS-
 
 ### Configuration
 
+#### Project configuration
+
+Available options:
+
+- `name`: the name of your project
+- `gitUrl`: URL of your Git repository to clone (make sure credentials are saved before running benchmarks)
+- `gitCliConfigOverrides`: key-value object, will be passed to `git clone -c your=option -c another=option` to override global config options, such as `autocrlf`, etc.
+- `rootFolder`: this is your NodeJS root folder (where the `package.json` is). If you have multiple projects within the same repo - add multiple project entries with different root folders
+- `patches`: _optional_ array of patches to apply, requires `name` and `file` options, see [patching](#patching)
+- `commands`: an array of commands to be benchmarked, see [commands](#commands)
+
+#### Commands
+
+Commands are what being benchmarked, common examples: `npm ci`, `npm test`, `npm run build`, etc.
+
+Every command needs a `name`.
+
+Types of commands (only one per command):
+
+- `npmScriptName` - will call `npm run ${npmScriptName}`, for example `npmScriptName: "build-dev"`
+- `npxCommand` - will call `npx ${npxCommand}`, for example: `npxCommand: "jest"`
+- `npmCommand` - will call `npm ${npmCommand}`, for example: `npmCommand: "ci"`
+
 #### Patching
 
 Patching can be useful to disable certain tests, change scripts, engines, etc. It's run right after cloning, before installing nodeenv and npm modules.
