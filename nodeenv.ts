@@ -26,7 +26,10 @@ export type Engines = {
 export const getPythonExecutable = (): "python" | "python3" | null => {
   const checkExists = (executable: "python" | "python3"): boolean => {
     try {
-      const result = execSync(`${executable} --version`, { encoding: "utf-8" });
+      const result = execSync(`${executable} --version`, {
+        encoding: "utf-8",
+        stdio: "pipe",
+      });
       if (result.startsWith("Python 3.")) return true;
       // eslint-disable-next-line no-empty
     } catch (e) {}
