@@ -11,7 +11,7 @@ Designed to benchmark performance of PCs/Laptops/WSL/etc when working on NodeJS-
 5. Run `npm ci` to install deps
 6. Copy `config.example.ts` to `config.ts`
 7. Modify `config.ts` to your liking (add projects, commands, optionally patches, etc.), see [Configuration](#configuration)
-8. Run `npm start`
+8. Run `npm start` (or `npm start -- --run-indefinitely`)
 9. See results in CLI (mean ± standard deviation):
 
    ```
@@ -22,6 +22,10 @@ Designed to benchmark performance of PCs/Laptops/WSL/etc when working on NodeJS-
    ```
 
    and more details in `results.json` file
+
+### CLI Options
+
+`--run-indefinitely` - when set, will re-run benchmarks for all projects until you stop the process manually (using Ctrl+C). Useful for when you can leave device running for long and want to get more precise benchmark results.
 
 ### Configuration
 

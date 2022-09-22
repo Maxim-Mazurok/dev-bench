@@ -11,7 +11,9 @@ const reporters = [
   new CliReporter(...commonReporterArguments),
 ];
 
-for (const project of projects) {
-  const processProject = new ProcessProject(project, reporters);
-  await processProject.main();
-}
+do {
+  for (const project of projects) {
+    const processProject = new ProcessProject(project, reporters);
+    await processProject.main();
+  }
+} while (process.argv.includes("--run-indefinitely"));
