@@ -128,6 +128,25 @@
       },
       "zero": false,
       "nice": true
+    },
+    {
+      "name": "environment_mean_color",
+      "type": "ordinal",
+      "domain": { "data": "temp_results", "field": "environment" },
+      "range": ["#dae8fc", "#fff2cc"]
+    },
+    {
+      "name": "environment_minmax_color",
+      "type": "ordinal",
+      "domain": { "data": "temp_results", "field": "environment" },
+      "range": ["#6c8ebf", "#d6b656"]
+    }
+  ],
+  "legends": [
+    {
+      "stroke": "environment_minmax_color",
+      "fill": "environment_mean_color",
+      "symbolStrokeWidth": 3
     }
   ],
   "axes": [
@@ -153,18 +172,6 @@
           "range": "height",
           "paddingOuter": 0.2,
           "domain": { "data": "facet", "field": "environment" }
-        },
-        {
-          "name": "environment_mean_color",
-          "type": "ordinal",
-          "domain": { "data": "temp_results", "field": "environment" },
-          "range": ["#dae8fc", "#fff2cc"]
-        },
-        {
-          "name": "environment_minmax_color",
-          "type": "ordinal",
-          "domain": { "data": "temp_results", "field": "environment" },
-          "range": ["#6c8ebf", "#d6b656"]
         }
       ],
       "marks": [
