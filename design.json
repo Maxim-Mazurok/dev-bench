@@ -144,14 +144,29 @@
   ],
   "legends": [
     {
+      "orient": "left",
       "stroke": "environment_minmax_color",
       "fill": "environment_mean_color",
       "symbolStrokeWidth": 3
     }
   ],
   "axes": [
-    { "orient": "bottom", "scale": "xscale", "zindex": 1, "title": "duration" },
-    { "orient": "left", "scale": "yscale", "zindex": 1 }
+    {
+      "orient": "bottom",
+      "scale": "xscale",
+      "zindex": 1,
+      "title": "Duration, seconds",
+      "grid": true,
+      "gridOpacity": 0.1,
+      "gridColor": "#000"
+    },
+    {
+      "orient": "left",
+      "scale": "yscale",
+      "zindex": 1,
+      "grid": true,
+      "gridColor": "#000"
+    }
   ],
   "marks": [
     {
@@ -239,8 +254,7 @@
               },
               "fill": { "value": "black" },
               "align": { "value": "right" },
-              "baseline": { "value": "middle" },
-              "text": { "field": "datum.environment" }
+              "baseline": { "value": "middle" }
             }
           }
         }
