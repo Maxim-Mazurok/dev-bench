@@ -7,6 +7,5 @@ export class TempFolder {
 
   constructor(friendlyName: string) {
     this.fullPath = mkdtempSync(join(tmpdir(), `${friendlyName}_`));
-    console.log(this.fullPath);
   }
 }
