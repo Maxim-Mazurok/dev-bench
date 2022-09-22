@@ -1,14 +1,6 @@
 import { exec } from "child_process";
-import {
-  mkdtempSync,
-  rmSync,
-  readFileSync,
-  writeFileSync,
-  appendFileSync,
-} from "fs";
-import { tmpdir } from "os";
-import { join } from "path";
-import rimraf from "rimraf";
+import { rmSync, readFileSync, writeFileSync, appendFileSync } from "node:fs";
+import { join } from "node:path";
 import { defaultEngines } from "./config.js";
 import {
   execDefaultOptions,
@@ -22,6 +14,7 @@ import {
   installNodeenv,
 } from "./nodeenv.js";
 import { CollectResult, Reporter } from "./reporters/Reporter.js";
+import { TempFolderManager } from "./TempFolderManager.js";
 import { Project, RunWithNodeenvResult, Command, Patch } from "./types.js";
 
 export class ProcessProject {
@@ -29,15 +22,12 @@ export class ProcessProject {
   private projectTempFolder: string;
   private engines: Engines | null = null;
   private reporters: Reporter[];
+  private tempFolderManager = new TempFolderManager();
 
   constructor(project: Project, reporters: Reporter[]) {
     this.project = project;
-    this.projectTempFolder = this.getProjectTempFolder();
+    this.projectTempFolder = this.tempFolderManager.add("dev-bench");
     this.reporters = reporters;
-  }
-
-  private getProjectTempFolder() {
-    return mkdtempSync(join(tmpdir(), "dev-bench_"));
   }
 
   private get repositoryFolder() {
@@ -88,6 +78,7 @@ export class ProcessProject {
     const process = await runWithNodeenv(
       command,
       this.nodeenvFolder,
+      this.tempFolderManager,
       this.projectRootFolder
     );
     return this.runProcess(process);
@@ -184,9 +175,9 @@ export class ProcessProject {
     debug(result);
   }
 
-  private cleanUp() {
+  private async cleanUp() {
     console.log("Cleaning up");
-    rimraf.sync(this.repositoryFolder);
+    await this.tempFolderManager.cleanup();
   }
 
   async main() {
@@ -204,6 +195,6 @@ export class ProcessProject {
       await this.processCommand(command);
     }
 
-    this.cleanUp();
+    await this.cleanUp();
   }
 }

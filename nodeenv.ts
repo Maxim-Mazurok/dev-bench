@@ -1,11 +1,12 @@
 import { exec, ExecOptions, execSync } from "node:child_process";
-import { appendFileSync, mkdtempSync, readFileSync } from "node:fs";
-import { EOL, platform, tmpdir } from "node:os";
+import { appendFileSync, readFileSync } from "node:fs";
+import { EOL, platform } from "node:os";
 import { dirname, isAbsolute, join } from "node:path";
 import allNodeVersions from "all-node-versions";
 import normalizeNodeVersion from "normalize-node-version";
 
 import { fileURLToPath } from "url";
+import { TempFolderManager } from "./TempFolderManager.js";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export const debug = (stringOrObject: string | object) => {
@@ -68,42 +69,6 @@ const nodeenvActivate = (nodeenvPath: string) =>
     ? [join(nodeenvPath, "Scripts", "activate")]
     : [". " + join(nodeenvPath, "bin", "activate")];
 
-export const getInstalledEnginesNodeenv = async (
-  nodeenvPath: string,
-  cwd?: string
-): Promise<Engines> => {
-  const checkProcess = await runWithNodeenv(
-    ["node -v", "npm -v"].join(" && "),
-    nodeenvPath,
-    cwd
-  );
-
-  return new Promise((resolve, reject) => {
-    if (checkProcess.stdout === null || checkProcess.stderr === null) {
-      return reject("cant start check process");
-    }
-    let output = "",
-      error = "";
-    checkProcess.stdout.on("data", (data) => {
-      output += data;
-    });
-    checkProcess.stderr.on("data", (data) => {
-      error += data;
-    });
-    checkProcess.on("exit", (code) => {
-      if (code === 0) {
-        const [node, npm] = output
-          .replace(/v/g, "")
-          .replace(/\n/g, "")
-          .split("\r");
-        resolve({ node, npm });
-      } else {
-        reject(JSON.stringify({ code, error, output }, null, 2));
-      }
-    });
-  });
-};
-
 export const isDefaultNpmVersion = async (node: string, npm: string) => {
   const nodeNormalized = await normalizeNodeVersion(node);
   const { versions } = await allNodeVersions();
@@ -132,6 +97,7 @@ const getNodeenvActivateCommands = async (
 export const runWithNodeenv = async (
   command: string,
   nodeenvPath: string,
+  tempFolderManager: TempFolderManager,
   cwd?: string
 ) => {
   const useNodeenv: string[] = [];
@@ -141,7 +107,8 @@ export const runWithNodeenv = async (
     command === "npm i" ||
     command === "npm ci"
   ) {
-    command += ` --cache ${mkdtempSync(join(tmpdir(), "npm_cache"))}`;
+    const cacheFolderFullPath = tempFolderManager.add("npm_cache");
+    command += ` --cache ${cacheFolderFullPath}`;
   }
   useNodeenv.push(...nodeenvActivate(nodeenvPath));
 
