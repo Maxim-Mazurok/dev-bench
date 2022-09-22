@@ -70,6 +70,54 @@
           "environment": "WSL",
           "command": "npm run build",
           "project": "BWW"
+        },
+        {
+          "duration": 5,
+          "environment": "Windows",
+          "command": "npm run build",
+          "project": "WebWatcher"
+        },
+        {
+          "duration": 8.5,
+          "environment": "WSL",
+          "command": "npm run build",
+          "project": "WebWatcher"
+        },
+        {
+          "duration": 6,
+          "environment": "Windows",
+          "command": "npm run build",
+          "project": "WebWatcher"
+        },
+        {
+          "duration": 6.5,
+          "environment": "WSL",
+          "command": "npm run build",
+          "project": "WebWatcher"
+        },
+        {
+          "duration": 3,
+          "environment": "Windows",
+          "command": "npm run lint",
+          "project": "WebWatcher"
+        },
+        {
+          "duration": 4,
+          "environment": "WSL",
+          "command": "npm run lint",
+          "project": "WebWatcher"
+        },
+        {
+          "duration": 4,
+          "environment": "Windows",
+          "command": "npm run lint",
+          "project": "WebWatcher"
+        },
+        {
+          "duration": 5,
+          "environment": "WSL",
+          "command": "npm run lint",
+          "project": "WebWatcher"
         }
       ]
     },
@@ -112,10 +160,10 @@
   ],
   "scales": [
     {
-      "name": "yscale",
+      "name": "yscale_project",
       "type": "band",
       "range": "height",
-      "domain": { "data": "temp_results", "field": "command" }
+      "domain": { "data": "temp_results", "field": "project" }
     },
     {
       "name": "xscale",
@@ -161,8 +209,8 @@
       "gridColor": "#000"
     },
     {
-      "orient": "left",
-      "scale": "yscale",
+      "orient": "right",
+      "scale": "yscale_project",
       "zindex": 1,
       "grid": true,
       "gridColor": "#000"
@@ -170,93 +218,130 @@
   ],
   "marks": [
     {
+      "resolve": { "scale": { "y": "independent" } },
       "type": "group",
       "from": {
         "facet": {
           "data": "temp_results",
-          "name": "facet",
-          "groupby": "command"
+          "name": "facet_projects",
+          "groupby": "project"
         }
       },
-      "encode": { "enter": { "y": { "scale": "yscale", "field": "command" } } },
-      "signals": [{ "name": "height", "update": "bandwidth('yscale')" }],
+      "encode": {
+        "enter": { "y": { "scale": "yscale_project", "field": "project" } }
+      },
+      "signals": [
+        { "name": "height", "update": "bandwidth('yscale_project')" }
+      ],
       "scales": [
         {
-          "name": "environment_scale",
+          "name": "projects_scale",
           "type": "band",
           "range": "height",
           "paddingOuter": 0.2,
-          "domain": { "data": "facet", "field": "environment" }
+          "domain": { "data": "facet_projects", "field": "project" }
+        },
+        {
+          "name": "yscale_command",
+          "type": "band",
+          "range": "height",
+          "domain": { "data": "facet_projects", "field": "command" }
+        }
+      ],
+      "axes": [
+        {
+          "orient": "left",
+          "scale": "yscale_command",
+          "zindex": 1,
+          "grid": true,
+          "gridColor": "#000"
         }
       ],
       "marks": [
         {
-          "name": "stdevs",
-          "type": "rect",
-          "from": { "data": "facet" },
-          "encode": {
-            "enter": {
-              "fill": {
-                "scale": "environment_mean_color",
-                "field": "environment"
-              },
-              "height": { "scale": "environment_scale", "band": 1 },
-              "y": { "scale": "environment_scale", "field": "environment" },
-              "x": { "scale": "xscale", "signal": "datum.mean - datum.stdev" },
-              "x2": { "scale": "xscale", "signal": "datum.mean + datum.stdev" }
+          "type": "group",
+          "from": {
+            "facet": {
+              "data": "facet_projects",
+              "name": "facet_command",
+              "groupby": "command"
             }
-          }
-        },
-        {
-          "name": "minmaxes",
-          "type": "rect",
-          "from": { "data": "facet" },
+          },
           "encode": {
-            "enter": {
-              "fill": {
-                "scale": "environment_minmax_color",
-                "field": "environment"
-              },
-              "height": { "scale": "environment_scale", "band": 0.2 },
-              "y": {
-                "scale": "environment_scale",
-                "field": "environment",
-                "offset": { "scale": "environment_scale", "band": 0.4 }
-              },
-              "x": { "scale": "xscale", "field": "min" },
-              "x2": { "scale": "xscale", "field": "max" }
+            "enter": { "y": { "scale": "yscale_command", "field": "command" } }
+          },
+          "signals": [
+            { "name": "height", "update": "bandwidth('yscale_command')" }
+          ],
+          "scales": [
+            {
+              "name": "environment_scale",
+              "type": "band",
+              "range": "height",
+              "paddingOuter": 0.2,
+              "domain": { "data": "facet_command", "field": "environment" }
             }
-          }
-        },
-        {
-          "name": "means",
-          "type": "rect",
-          "from": { "data": "facet" },
-          "encode": {
-            "enter": {
-              "fill": { "value": "black" },
-              "height": { "scale": "environment_scale", "band": 1 },
-              "width": { "scale": "environment_scale", "band": 0.2 },
-              "y": { "scale": "environment_scale", "field": "environment" },
-              "xc": { "scale": "xscale", "field": "mean" }
+          ],
+          "marks": [
+            {
+              "name": "stdevs",
+              "type": "rect",
+              "from": { "data": "facet_command" },
+              "encode": {
+                "enter": {
+                  "fill": {
+                    "scale": "environment_mean_color",
+                    "field": "environment"
+                  },
+                  "height": { "scale": "environment_scale", "band": 1 },
+                  "y": { "scale": "environment_scale", "field": "environment" },
+                  "x": {
+                    "scale": "xscale",
+                    "signal": "datum.mean - datum.stdev"
+                  },
+                  "x2": {
+                    "scale": "xscale",
+                    "signal": "datum.mean + datum.stdev"
+                  }
+                }
+              }
+            },
+            {
+              "name": "minmaxes",
+              "type": "rect",
+              "from": { "data": "facet_command" },
+              "encode": {
+                "enter": {
+                  "fill": {
+                    "scale": "environment_minmax_color",
+                    "field": "environment"
+                  },
+                  "height": { "scale": "environment_scale", "band": 0.2 },
+                  "y": {
+                    "scale": "environment_scale",
+                    "field": "environment",
+                    "offset": { "scale": "environment_scale", "band": 0.4 }
+                  },
+                  "x": { "scale": "xscale", "field": "min" },
+                  "x2": { "scale": "xscale", "field": "max" }
+                }
+              }
+            },
+            {
+              "name": "means",
+              "type": "rect",
+              "from": { "data": "facet_command" },
+              "encode": {
+                "enter": {
+                  "fill": { "value": "black" },
+                  "height": { "scale": "environment_scale", "band": 1 },
+                  "width": { "scale": "environment_scale", "band": 0.2 },
+                  "y": { "scale": "environment_scale", "field": "environment" },
+                  "xc": { "scale": "xscale", "field": "mean" }
+                }
+              }
             }
-          }
-        },
-        {
-          "type": "text",
-          "from": { "data": "stdevs" },
-          "encode": {
-            "enter": {
-              "x": { "field": "x", "offset": -5 },
-              "y": {
-                "field": "y",
-                "offset": { "field": "height", "mult": 0.25 }
-              },
-              "fill": { "value": "black" },
-              "align": { "value": "right" },
-              "baseline": { "value": "middle" }
-            }
-          }
+          ]
         }
       ]
     }
