@@ -15,7 +15,10 @@ export abstract class Reporter {
   private readonly environment: Environment;
 
   constructor(environment: Partial<Environment>) {
-    this.environment = { ...defaultEnvironment, ...environment };
+    this.environment = { ...defaultEnvironment };
+    Object.entries(environment).forEach(([key, value]) => {
+      if (value !== undefined) this.environment[key] = value;
+    });
   }
 
   getEnvironment() {

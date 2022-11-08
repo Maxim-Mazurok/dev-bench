@@ -5,6 +5,4 @@ export const defaultEnvironment: Environment = {
   deviceName: hostname(),
   platform: process.platform,
   platformDetails: "",
-  biosSettings: {},
-  otherSettings: {},
 };

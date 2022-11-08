@@ -11,17 +11,17 @@ export const defaultEngines: Engines = {
 };
 
 export const environment: Partial<Environment> = {
-  deviceName: "Work Laptop", // detected automatically if not specified
-  platform: "linux", // detected automatically if not specified
+  deviceName: "Work Laptop", // detected automatically from `os.hostname` if not specified
+  platform: "linux", // detected automatically from `process.platform` if not specified
   platformDetails: "WSL2 (Ubuntu 22.04.1)", // TODO: maybe detect automatically using https://www.npmjs.com/package/getos
-  biosSettings: {
-    "Intel® Turbo Boost Max Technology 3.0": true,
-  },
-  otherSettings: {
-    batteryLevelPercent: 100,
-    powerMode: "Best performance",
-    charging: true,
-  },
+
+  // BIOS Settings (optional):
+  "bios: Intel® Turbo Boost Max Technology 3.0": true,
+
+  // Other Settings (optional):
+  batteryLevelPercent: 100,
+  powerMode: "Best performance",
+  charging: true,
 };
 
 // config
