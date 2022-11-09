@@ -28,5 +28,22 @@ export abstract class Reporter {
   /**
    * Called after each command, for each registered reporters
    */
-  abstract reportResult(result: CollectResult): void;
+  async reportResult(collectResult: CollectResult): Promise<void> {
+    await this.processResult?.({
+      ...collectResult,
+      environment: this.getEnvironment(),
+    });
+  }
+
+  /**
+   * Called after each command, for each registered reporters
+   */
+  processResult?(reportResult: ReportResult): void | Promise<void>;
+
+  /**
+   * Called after all projects are benchmarked, for each registered reporters
+   *
+   * Will not be called when benchmarking with `--run-indefinitely` flag
+   */
+  afterAll?(): void | Promise<void>;
 }

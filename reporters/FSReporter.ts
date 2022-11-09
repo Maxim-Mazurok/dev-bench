@@ -1,6 +1,6 @@
 import { ResultsIO } from "../ResultsIO.js";
 import { Environment } from "../types.js";
-import { CollectResult, Reporter } from "./Reporter.js";
+import { Reporter, ReportResult } from "./Reporter.js";
 
 export class FSReporter extends Reporter {
   private readonly resultsIO: ResultsIO;
@@ -10,7 +10,7 @@ export class FSReporter extends Reporter {
     this.resultsIO = resultsIO;
   }
 
-  reportResult(result: CollectResult) {
-    this.resultsIO.append({ ...result, environment: this.getEnvironment() });
+  processResult(reportResult: ReportResult) {
+    this.resultsIO.append(reportResult);
   }
 }

@@ -159,9 +159,9 @@ export class ProcessProject {
       projectName: this.project.name,
       totalsInMs: totals,
     };
-    this.reporters.forEach((reporter) => {
-      reporter.reportResult(result);
-    });
+    for (const reporter of this.reporters) {
+      await reporter.reportResult(result);
+    }
   }
 
   private async setupNodeenv() {
@@ -189,7 +189,7 @@ export class ProcessProject {
 
     await this.setupNodeenv();
 
-    await this.npmCi();
+    // await this.npmCi(); // TODO: make this configurable
 
     for (const command of this.project.commands) {
       await this.processCommand(command);

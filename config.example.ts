@@ -24,7 +24,10 @@ export const environment: Partial<Environment> = {
   charging: true,
 };
 
-// config
+// reporters config
+export const groupByKey: keyof Environment = "platform"; // this key will be used to group chart results, for example if you're comparing running on different devices, use `deviceName`, etc.
+
+// runners config
 export const projects: Project[] = [
   {
     name: "My App",

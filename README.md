@@ -25,7 +25,7 @@ Designed to benchmark performance of PCs/Laptops/WSL/etc when working on NodeJS-
 
 ### CLI Options
 
-`--run-indefinitely` - when set, will re-run benchmarks for all projects until you stop the process manually (using Ctrl+C). Useful for when you can leave device running for long and want to get more precise benchmark results.
+`--run-indefinitely` - when set, will re-run benchmarks for all projects until you stop the process manually (using Ctrl+C). Useful for when you can leave device running for long and want to get more precise benchmark results. Note: `afterAll()` hooks won't run in this case, which might affect reporters <!--TODO: detect Ctrl+C and run `afterAll()` hooks -->
 
 ### Configuration
 
@@ -71,11 +71,12 @@ The system supports multiple reporters that extend [`Reporter` class](./reporter
 Available reporters:
 
 - `cli` - logs totals, averages and deviation to stdout
-- `fs` - preserves reports into `reports.json` file
+- `fs` - preserves reports into `results.json` file
+- `chart` - saves visual representation in `results.png` file
 
-All reporters have to implement `reportResult()` method that is called after each command is benchmarked.
+All reporters have to implement `collectResult()` method that is called after each command is benchmarked.
 
-<!-- TODO: add visual reporter, probably at the end of all benchmarks? -->
+Some reporters may choose to implement `afterAll()` method that is called after all benchmarks are done for all projects.
 
 ## Troubleshooting
 
@@ -84,3 +85,6 @@ All reporters have to implement `reportResult()` method that is called after eac
 ## TODO
 
 - [ ] Add visual comparison of results: ![chart design](design.png) using [Vega](https://vega.github.io/editor) [prototype](design.json)
+  - [ ] Need to figure out how to implement this. Just adding it as a reporter doesn't make a lot of sense because in a given environment we only have results from that environment. Maybe consider creating a Gist reporter that will upload/append results to a Gist - and then chart can be generated based on all those results.
+- [ ] Related to previous point: think how can we make managing results easier for the end user.
+- [ ] Maybe pull config from Gist - this way user can make Gist public and avoid having to auth in all envs
