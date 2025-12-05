@@ -23,23 +23,6 @@ export type Engines = {
   npm: string;
 };
 
-export const getPythonExecutable = (): "python" | "python3" | null => {
-  const checkExists = (executable: "python" | "python3"): boolean => {
-    try {
-      const result = execSync(`${executable} --version`, {
-        encoding: "utf-8",
-        stdio: "pipe",
-      });
-      if (result.startsWith("Python 3.")) return true;
-      // eslint-disable-next-line no-empty
-    } catch (e) {}
-    return false;
-  };
-  if (checkExists("python")) return "python";
-  if (checkExists("python3")) return "python3";
-  return null;
-};
-
 export const getEngines = async (
   packageJsonPath = "package.json"
 ): Promise<Engines | undefined> => {
@@ -80,7 +63,7 @@ export const isDefaultNpmVersion = async (node: string, npm: string) => {
 };
 
 const getNodeenvCommand = ({ node }: Engines, nodeenvPath: string): string => {
-  const nodeenvCommand = `${getPythonExecutable()} -m nodeenv ${nodeenvPath} --node=${node}`;
+  const nodeenvCommand = `nodeenv ${nodeenvPath} --node=${node}`;
   debug({ nodeenvCommand });
   return nodeenvCommand;
 };
