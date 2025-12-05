@@ -6,8 +6,8 @@ Designed to benchmark performance of PCs/Laptops/WSL/etc when working on NodeJS-
 
 1. Clone this repo
 2. Install `nodeenv`:
-  - Ubuntu/WSL: `sudo apt install nodeenv`
   - MacOS (using [Homebrew](https://brew.sh/)): `brew install nodeenv`
+  - Ubuntu/WSL: check [nodeenv installation docs](https://github.com/ekalinin/nodeenv#install), ensure that `nodeenv` command is available in your PATH
 3. Run `npm ci` to install deps
 4. Copy `config.example.ts` to `config.ts`
 5. Modify `config.ts` to your liking (add projects, commands, optionally patches, etc.), see [Configuration](#configuration)
